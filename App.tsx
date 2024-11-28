@@ -1,33 +1,29 @@
+import { Loading } from '@components/Loading'
 import {
   Roboto_400Regular,
   Roboto_700Bold,
   useFonts,
 } from '@expo-google-fonts/roboto'
-import { StatusBar, Text, View } from 'react-native'
+import { GluestackUIProvider, View } from '@gluestack-ui/themed'
+import { SignIn } from '@screens/SignIn'
+import { StatusBar } from 'react-native'
+
+import { config } from './config/gluestack-ui.config'
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold })
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#202024',
-      }}
-    >
-      {fontsLoaded ? (
-        <Text style={{ fontFamily: 'Roboto_700Bold' }}>Home</Text>
-      ) : (
-        <View />
-      )}
+    <GluestackUIProvider config={config}>
+      <View flex={1} bg="$gray700">
+        {fontsLoaded ? <SignIn /> : <Loading />}
+      </View>
 
       <StatusBar
         backgroundColor="transparent"
         barStyle="light-content"
         translucent
       />
-    </View>
+    </GluestackUIProvider>
   )
 }

@@ -14,7 +14,7 @@
       "@services/*": ["./services/*"],
       "@hooks/*": ["./hooks/*"],
       "@contexts/*": ["./contexts/*"],
-      "@routes/*": ["./routes/*"]
+      "@routes/*": ["./routes/*"],
     }
   }
 }
