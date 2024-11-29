@@ -11,14 +11,21 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed'
+import { useNavigation } from '@react-navigation/native'
 
 export function SignUp() {
+  const navigator = useNavigation()
+
+  function handleSignInScreen() {
+    navigator.goBack()
+  }
+
   return (
     <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flex: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack flex={1} bg="$gray700">
+      <VStack flex={1}>
         <Image
           source={ImageBackground}
           defaultSource={ImageBackground}
@@ -53,9 +60,13 @@ export function SignUp() {
             <Button label="Criar e acessar" isLoading={false} />
           </Center>
 
-          <SafeAreaView justifyContent="flex-end">
+          <SafeAreaView>
             <Center pb="$4">
-              <Button label="Já tenho uma conta" variant="outline" />
+              <Button
+                label="Já tenho uma conta"
+                variant="outline"
+                onPress={handleSignInScreen}
+              />
             </Center>
           </SafeAreaView>
         </VStack>

@@ -11,14 +11,22 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed'
+import { useNavigation } from '@react-navigation/native'
+import type { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 
 export function SignIn() {
+  const navigator = useNavigation<AuthNavigatorRoutesProps>()
+
+  function handleCreateNewAccount() {
+    navigator.navigate('signUp')
+  }
+
   return (
     <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flex: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack flex={1} bg="$gray700">
+      <VStack flex={1}>
         <Image
           source={ImageBackground}
           defaultSource={ImageBackground}
@@ -52,12 +60,16 @@ export function SignIn() {
             <Button label="Acessar" isLoading={false} />
           </Center>
 
-          <SafeAreaView justifyContent="flex-end">
+          <SafeAreaView>
             <Center gap="$2" pb="$4">
               <Text color="$gray100" fontSize="$md" fontFamily="$body">
                 Ainda não tem acesso?
               </Text>
-              <Button label="Criar Conta" variant="outline" />
+              <Button
+                label="Criar Conta"
+                variant="outline"
+                onPress={handleCreateNewAccount}
+              />
             </Center>
           </SafeAreaView>
         </VStack>

@@ -5,8 +5,7 @@ import {
   useFonts,
 } from '@expo-google-fonts/roboto'
 import { GluestackUIProvider, View } from '@gluestack-ui/themed'
-import { SignIn } from '@screens/SignIn'
-import { SignUp } from '@screens/SignUp'
+import { Routes } from '@routes/index'
 import { StatusBar } from 'react-native'
 
 import { config } from './config/gluestack-ui.config'
@@ -17,7 +16,7 @@ export default function App() {
   return (
     <GluestackUIProvider config={config}>
       <View flex={1} bg="$gray700">
-        {fontsLoaded ? <SignUp /> : <Loading />}
+        {fontsLoaded ? <Routes /> : <Loading />}
       </View>
 
       <StatusBar
