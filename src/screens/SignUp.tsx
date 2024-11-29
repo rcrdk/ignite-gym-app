@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed'
 
-export function SignIn() {
+export function SignUp() {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -39,25 +39,23 @@ export function SignIn() {
 
         <VStack flex={1} px="$10">
           <Center flex={1} py="$24" gap="$3">
-            <Heading color="$gray100">Acesse a conta</Heading>
+            <Heading color="$gray100">Crie sua conta</Heading>
+
+            <Input placeholder="Nome" enterKeyHint="next" />
 
             <Input
               placeholder="E-mail"
               keyboardType="email-address"
               enterKeyHint="next"
             />
-
             <Input placeholder="Senha" enterKeyHint="go" secureTextEntry />
 
-            <Button label="Acessar" isLoading={false} />
+            <Button label="Criar e acessar" isLoading={false} />
           </Center>
 
           <SafeAreaView justifyContent="flex-end">
-            <Center gap="$2" pb="$4">
-              <Text color="$gray100" fontSize="$md" fontFamily="$body">
-                Ainda não tem acesso?
-              </Text>
-              <Button label="Criar Conta" variant="outline" />
+            <Center pb="$4">
+              <Button label="Já tenho uma conta" variant="outline" />
             </Center>
           </SafeAreaView>
         </VStack>
