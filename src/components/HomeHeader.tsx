@@ -17,8 +17,7 @@ export function HomeHeader() {
         <Avatar
           source={{ uri: 'https://github.com/rcrdk.png' }}
           alt="Avatar do usuário"
-          w="$14"
-          h="$14"
+          size="sm"
         />
 
         <VStack justifyContent="center" flex={1}>

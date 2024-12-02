@@ -41,7 +41,7 @@ export function Home() {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
-          paddingHorizontal: 32,
+          paddingHorizontal: 24,
         }}
         style={{
           marginVertical: 40,
@@ -50,7 +50,7 @@ export function Home() {
         }}
       />
 
-      <VStack px="$8" flex={1}>
+      <VStack px="$6" flex={1}>
         <HStack justifyContent="space-between" alignItems="center" mb="$5">
           <Heading color="$gray200" fontSize="$md" fontFamily="$heading">
             Exercícios

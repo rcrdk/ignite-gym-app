@@ -31,7 +31,7 @@ export function History() {
           </Heading>
         )}
         showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 32 }}
+        style={{ paddingHorizontal: 24 }}
         stickySectionHeadersEnabled={false}
         contentContainerStyle={[
           { paddingTop: 6, paddingBottom: 32 },
