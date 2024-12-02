@@ -3,6 +3,8 @@ import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
 import { Text } from '@gluestack-ui/themed'
 import { Center, Heading, HStack, VStack } from '@gluestack-ui/themed'
+import { useNavigation } from '@react-navigation/native'
+import type { AppNavigatorRoutesProps } from '@routes/app.routes'
 import { useState } from 'react'
 import { FlatList } from 'react-native'
 
@@ -23,6 +25,12 @@ export function Home() {
     'Remana Unilateral',
     'Levantamento Terra',
   ])
+
+  const navigator = useNavigation<AppNavigatorRoutesProps>()
+
+  function handleShowExerciseDetails() {
+    navigator.navigate('exercise')
+  }
 
   return (
     <VStack flex={1}>
@@ -64,7 +72,9 @@ export function Home() {
         <FlatList
           data={exercises}
           keyExtractor={(item) => item}
-          renderItem={({ item }) => <ExerciseCard />}
+          renderItem={({ item }) => (
+            <ExerciseCard onPress={handleShowExerciseDetails} />
+          )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 20,
