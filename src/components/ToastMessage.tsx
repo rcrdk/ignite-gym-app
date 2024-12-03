@@ -29,7 +29,7 @@ export function ToastMessage({
       nativeID={`toast-${id}`}
       action={action}
       bg={action === 'success' ? '$green500' : '$red500'}
-      mt="$10"
+      mt="$0"
       rounded="$xl"
     >
       <HStack gap="$2" w="$full">

@@ -2,6 +2,7 @@ import ImageBackground from '@assets/background.png'
 import ImageBrand from '@assets/logo.svg'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
+import { ToastMessage } from '@components/ToastMessage'
 import {
   Center,
   Heading,
@@ -9,25 +10,21 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useAuth } from '@hooks/useAuth'
 import { useNavigation } from '@react-navigation/native'
 import type { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import { type FormDataProps, signInSchema } from '@schemas/signInSchema'
+import { getErrorMessage } from '@utils/AppErrorMessage'
 import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-const signInSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Informe o e-mail.')
-    .email('Informe um email válido.'),
-  password: z.string().min(1, 'Informe a senha.'),
-})
-
-type FormDataProps = z.infer<typeof signInSchema>
 
 export function SignIn() {
+  const { onSignIn } = useAuth()
+  const toast = useToast()
+
   const {
     handleSubmit,
     control,
@@ -46,8 +43,29 @@ export function SignIn() {
     navigator.navigate('signUp')
   }
 
-  function handleSignIn({ email, password }: FormDataProps) {
-    console.log({ email, password })
+  async function handleSignIn({ email, password }: FormDataProps) {
+    try {
+      await onSignIn({ email, password })
+    } catch (error) {
+      const message = getErrorMessage(
+        error,
+        'Não foi possível entrar. Tente novamente mais tarde.',
+      )
+
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Ocorreu um erro."
+            description={message}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
 
   return (
@@ -124,7 +142,7 @@ export function SignIn() {
               <Button
                 label="Criar Conta"
                 variant="outline"
-                onPress={handleCreateNewAccount}
+                onPressIn={handleCreateNewAccount}
               />
             </Center>
           </SafeAreaView>

@@ -1,3 +1,4 @@
+import AvatarPlaceholder from '@assets/userPhotoDefault.png'
 import {
   Heading,
   HStack,
@@ -6,16 +7,20 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed'
+import { useAuth } from '@hooks/useAuth'
 import { LogOutIcon } from 'lucide-react-native'
+import { TouchableOpacity } from 'react-native'
 
 import { Avatar } from './Avatar'
 
 export function HomeHeader() {
+  const { user, onSignOut } = useAuth()
+
   return (
     <SafeAreaView bg="$gray600">
       <HStack py="$5" px="$8" gap="$4" alignItems="center">
         <Avatar
-          source={{ uri: 'https://github.com/rcrdk.png' }}
+          source={user.avatar ? { uri: user.avatar } : AvatarPlaceholder}
           alt="Avatar do usuário"
           size="sm"
         />
@@ -25,11 +30,13 @@ export function HomeHeader() {
             Olá,
           </Text>
           <Heading color="$gray100" fontSize="$md" lineHeight="$md">
-            Ricardo
+            {user.name}
           </Heading>
         </VStack>
 
-        <Icon as={LogOutIcon} color="$gray200" size="xl" />
+        <TouchableOpacity onPress={onSignOut}>
+          <Icon as={LogOutIcon} color="$gray200" size="xl" />
+        </TouchableOpacity>
       </HStack>
     </SafeAreaView>
   )

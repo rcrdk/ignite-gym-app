@@ -14,36 +14,12 @@ import {
   VStack,
 } from '@gluestack-ui/themed'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useAuth } from '@hooks/useAuth'
 import { useNavigation } from '@react-navigation/native'
+import { type FormDataProps, signUpSchema } from '@schemas/signUpSchema'
 import { API } from '@services/api'
-import { AppError } from '@utils/AppError'
+import { getErrorMessage } from '@utils/AppErrorMessage'
 import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-const signUpSchema = z
-  .object({
-    name: z.string().min(1, 'Informe o nome.'),
-    email: z
-      .string()
-      .min(1, 'Informe o e-mail.')
-      .email('Informe um email válido.'),
-    password: z
-      .string()
-      .min(1, 'Informe a senha.')
-      .min(6, 'Informe a senha com ao menos 6 digitos.'),
-    password_confirm: z.string().min(1, 'Confirme a senha.'),
-  })
-  .superRefine(({ password_confirm, password }, ctx) => {
-    if (password_confirm !== password) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'As senhas não são iguais.',
-        path: ['password_confirm'],
-      })
-    }
-  })
-
-type FormDataProps = z.infer<typeof signUpSchema>
 
 export function SignUp() {
   const {
@@ -62,6 +38,7 @@ export function SignUp() {
 
   const toast = useToast()
   const navigator = useNavigation()
+  const { onSignIn } = useAuth()
 
   function handleSignInScreen() {
     navigator.goBack()
@@ -69,22 +46,22 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: FormDataProps) {
     try {
-      const response = await API.post('/users', {
+      await API.post('/users', {
         name,
         email,
         password,
       })
 
-      console.log(response.data)
+      await onSignIn({ email, password })
     } catch (error) {
-      const isAppError = error instanceof AppError
-      const message = isAppError
-        ? error.message
-        : 'Não foi possivel criar a conta. Tente novamente mais tarde.'
+      const message = getErrorMessage(
+        error,
+        'Não foi possivel criar a conta. Tente novamente mais tarde.',
+      )
 
       toast.show({
         placement: 'top',
-        duration: 5000,
+        duration: 4000,
         render: ({ id }) => (
           <ToastMessage
             id={id}
