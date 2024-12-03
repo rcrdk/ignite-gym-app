@@ -1,4 +1,4 @@
-import { Button, Text } from '@gluestack-ui/themed'
+import { Button, Text, View } from '@gluestack-ui/themed'
 import type { ComponentProps } from 'react'
 
 type Props = ComponentProps<typeof Button> & {
@@ -35,4 +35,8 @@ export function Group({ label, isActive, ...props }: Props) {
       </Text>
     </Button>
   )
+}
+
+export function GroupSkeleton() {
+  return <View minWidth="$24" h="$10" bg="$gray600" rounded="$md" mr="$3" />
 }

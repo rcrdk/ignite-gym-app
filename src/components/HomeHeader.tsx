@@ -18,7 +18,7 @@ export function HomeHeader() {
 
   return (
     <SafeAreaView bg="$gray600">
-      <HStack py="$5" px="$8" gap="$4" alignItems="center">
+      <HStack py="$5" px="$6" gap="$4" alignItems="center">
         <Avatar
           source={user.avatar ? { uri: user.avatar } : AvatarPlaceholder}
           alt="Avatar do usuário"

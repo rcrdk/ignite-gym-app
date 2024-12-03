@@ -18,7 +18,7 @@ import { useAuth } from '@hooks/useAuth'
 import { useNavigation } from '@react-navigation/native'
 import { type FormDataProps, signUpSchema } from '@schemas/signUpSchema'
 import { API } from '@services/api'
-import { getErrorMessage } from '@utils/AppErrorMessage'
+import { AppError } from '@utils/AppError'
 import { Controller, useForm } from 'react-hook-form'
 
 export function SignUp() {
@@ -54,10 +54,10 @@ export function SignUp() {
 
       await onSignIn({ email, password })
     } catch (error) {
-      const message = getErrorMessage(
-        error,
-        'Não foi possivel criar a conta. Tente novamente mais tarde.',
-      )
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : 'Não foi possivel criar a conta. Tente novamente mais tarde.'
 
       toast.show({
         placement: 'top',

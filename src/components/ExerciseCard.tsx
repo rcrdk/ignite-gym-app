@@ -1,17 +1,22 @@
+import type { ExerciseDTO } from '@dtos/ExerciseDTO'
 import {
   Heading,
   HStack,
   Icon,
   Image,
   Text,
+  View,
   VStack,
 } from '@gluestack-ui/themed'
+import { API } from '@services/api'
 import { ChevronRightIcon } from 'lucide-react-native'
 import { TouchableOpacity, type TouchableOpacityProps } from 'react-native'
 
-type Props = TouchableOpacityProps & {}
+type Props = TouchableOpacityProps & {
+  exercise: ExerciseDTO
+}
 
-export function ExerciseCard({ ...props }: Props) {
+export function ExerciseCard({ exercise, ...props }: Props) {
   return (
     <TouchableOpacity {...props}>
       <HStack
@@ -24,7 +29,7 @@ export function ExerciseCard({ ...props }: Props) {
       >
         <Image
           source={{
-            uri: 'https://www.mundoboaforma.com.br/wp-content/uploads/2020/12/costas-remada-curvada-.gif',
+            uri: `${API.defaults.baseURL}/exercise/thumb/${exercise.thumb}`,
           }}
           alt="Imagem do exercício"
           w="$16"
@@ -41,7 +46,7 @@ export function ExerciseCard({ ...props }: Props) {
             fontFamily="$heading"
             lineHeight="$lg"
           >
-            Puxada inclinada
+            {exercise.name}
           </Heading>
 
           <Text
@@ -51,12 +56,20 @@ export function ExerciseCard({ ...props }: Props) {
             mt="$1"
             numberOfLines={2}
           >
-            3 séries | 12 repetições
+            {exercise.series} séries | {exercise.repetitions} repetições
           </Text>
         </VStack>
 
         <Icon as={ChevronRightIcon} color="$gray300" />
       </HStack>
     </TouchableOpacity>
+  )
+}
+
+export function ExerciseCardSkeleton() {
+  return (
+    <View bg="$gray600" p="$2" rounded="$md" mb="$3">
+      <View w="$16" h="$16" />
+    </View>
   )
 }

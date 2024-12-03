@@ -18,7 +18,7 @@ import { useAuth } from '@hooks/useAuth'
 import { useNavigation } from '@react-navigation/native'
 import type { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { type FormDataProps, signInSchema } from '@schemas/signInSchema'
-import { getErrorMessage } from '@utils/AppErrorMessage'
+import { AppError } from '@utils/AppError'
 import { Controller, useForm } from 'react-hook-form'
 
 export function SignIn() {
@@ -47,10 +47,10 @@ export function SignIn() {
     try {
       await onSignIn({ email, password })
     } catch (error) {
-      const message = getErrorMessage(
-        error,
-        'Não foi possível entrar. Tente novamente mais tarde.',
-      )
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : 'Não foi possível entrar. Tente novamente mais tarde.'
 
       toast.show({
         placement: 'top',
