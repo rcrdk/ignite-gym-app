@@ -17,7 +17,47 @@ import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 
+// const profileSchema = z
+//   .object({
+//     name: z.string().min(1, 'Informe o nome.'),
+//     email: z
+//       .string()
+//       .min(1, 'Informe o e-mail.')
+//       .email('Informe um email válido.'),
+//     password: z
+//       .string()
+//       .min(1, 'Informe a senha.')
+//       .min(6, 'Informe a senha com ao menos 6 digitos.'),
+//     password_confirm: z.string().min(1, 'Confirme a senha.'),
+//   })
+//   .superRefine(({ password_confirm, password }, ctx) => {
+//     if (password_confirm !== password) {
+//       ctx.addIssue({
+//         code: 'custom',
+//         message: 'As senhas não são iguais.',
+//         path: ['password_confirm'],
+//       })
+//     }
+//   })
+
+// type FormDataProps = z.infer<typeof profileSchema>
+
 export function Profile() {
+  // const {
+  //   handleSubmit,
+  //   control,
+  //   formState: { errors, isSubmitting },
+  // } = useForm<FormDataProps>({
+  //   resolver: zodResolver(profileSchema),
+  //   defaultValues: {
+  //     name: 'Ricardo August Kowalski',
+  //     email: 'ricardoakowalski@gmail.com',
+  //     current_password: '',
+  //     new_password: '',
+  //     password_confirm: '',
+  //   },
+  // })
+
   const [userAvatar, setUserAvatar] = useState('http://github.com/rcrdk.png')
 
   const toast = useToast()
@@ -62,6 +102,15 @@ export function Profile() {
       console.error(error)
     }
   }
+
+  // function handleSaveProfile({
+  //   name,
+  //   email,
+  //   password,
+  //   password_confirm,
+  // }: FormDataProps) {
+  //   console.log({ name, email, password, password_confirm })
+  // }
 
   return (
     <VStack flex={1}>

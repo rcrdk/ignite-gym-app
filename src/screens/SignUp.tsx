@@ -27,7 +27,7 @@ const signUpSchema = z
       .string()
       .min(1, 'Informe a senha.')
       .min(6, 'Informe a senha com ao menos 6 digitos.'),
-    password_confirm: z.string().min(1, 'Informe a confirmação de senha.'),
+    password_confirm: z.string().min(1, 'Confirme a senha.'),
   })
   .superRefine(({ password_confirm, password }, ctx) => {
     if (password_confirm !== password) {
@@ -45,7 +45,7 @@ export function SignUp() {
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormDataProps>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -68,7 +68,7 @@ export function SignUp() {
     password,
     password_confirm,
   }: FormDataProps) {
-    console.log(name, email, password, password_confirm)
+    console.log({ name, email, password, password_confirm })
   }
 
   return (
@@ -159,8 +159,8 @@ export function SignUp() {
 
             <Button
               label="Criar e acessar"
+              isLoading={isSubmitting}
               onPress={handleSubmit(handleSignUp)}
-              isLoading={false}
             />
           </Center>
 
