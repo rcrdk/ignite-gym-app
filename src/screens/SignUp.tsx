@@ -2,6 +2,7 @@ import ImageBackground from '@assets/background.png'
 import ImageBrand from '@assets/logo.svg'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
+import { ToastMessage } from '@components/ToastMessage'
 import {
   Center,
   Heading,
@@ -9,10 +10,13 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigation } from '@react-navigation/native'
+import { API } from '@services/api'
+import { AppError } from '@utils/AppError'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -56,19 +60,42 @@ export function SignUp() {
     },
   })
 
+  const toast = useToast()
   const navigator = useNavigation()
 
   function handleSignInScreen() {
     navigator.goBack()
   }
 
-  function handleSignUp({
-    name,
-    email,
-    password,
-    password_confirm,
-  }: FormDataProps) {
-    console.log({ name, email, password, password_confirm })
+  async function handleSignUp({ name, email, password }: FormDataProps) {
+    try {
+      const response = await API.post('/users', {
+        name,
+        email,
+        password,
+      })
+
+      console.log(response.data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : 'Não foi possivel criar a conta. Tente novamente mais tarde.'
+
+      toast.show({
+        placement: 'top',
+        duration: 5000,
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Ocorreu um erro."
+            description={message}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
 
   return (
