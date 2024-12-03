@@ -23,7 +23,7 @@ export function SignIn() {
 
   return (
     <ScrollView
-      contentContainerStyle={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
       <VStack flex={1}>
@@ -46,7 +46,7 @@ export function SignIn() {
         </SafeAreaView>
 
         <VStack flex={1} px="$10">
-          <Center flex={1} py="$24" gap="$3">
+          <Center flex={1} py="$12" gap="$3">
             <Heading color="$gray100">Acesse a conta</Heading>
 
             <Input
