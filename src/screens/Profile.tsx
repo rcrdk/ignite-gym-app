@@ -1,3 +1,4 @@
+import AvatarPlaceholder from '@assets/userPhotoDefault.png'
 import { Avatar } from '@components/Avatar'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
@@ -20,6 +21,7 @@ import { AppError } from '@utils/AppError'
 import { wait } from '@utils/wait'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
+import mime from 'mime'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity } from 'react-native'
@@ -38,8 +40,6 @@ export function Profile() {
       email: user.email,
     },
   })
-
-  const [userAvatar, setUserAvatar] = useState('http://github.com/rcrdk.png')
 
   const toast = useToast()
 
@@ -77,10 +77,69 @@ export function Profile() {
           })
         }
 
-        setUserAvatar(photoURI)
+        const fileExtension = photoURI.split('.').at(-1)
+        const fileName = user.name
+          .replaceAll(' ', '-')
+          .normalize('NFC')
+          .toLowerCase()
+
+        const avatarFile = {
+          name: `${fileName}.${fileExtension}`,
+          uri: photoURI,
+          type: mime.getType(photoSelected.assets[0].uri),
+        } as any
+
+        const formData = new FormData()
+        formData.append('avatar', avatarFile)
+
+        const { data: userWithUpdatedAvatar } = await API.patch(
+          '/users/avatar',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
+
+        const userUpdated = user
+        userUpdated.avatar = userWithUpdatedAvatar.avatar
+
+        await onUpdateUserProfile(userUpdated)
+
+        toast.show({
+          placement: 'top',
+          duration: 4000,
+          render: ({ id }) => (
+            <ToastMessage
+              id={id}
+              title="Avatar atualizado."
+              description="Seu avatar foi atualizado com sucesso."
+              action="success"
+              onClose={() => toast.close(id)}
+            />
+          ),
+        })
       }
     } catch (error) {
-      console.error(error)
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : 'Não foi possível atualizar seu avatar. Tente novamente mais tarde.'
+
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Ocorreu um erro."
+            description={message}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
     }
   }
 
@@ -144,7 +203,11 @@ export function Profile() {
       >
         <Center pt="$6" px="$6">
           <Avatar
-            source={{ uri: userAvatar }}
+            source={
+              user.avatar
+                ? { uri: `${API.defaults.baseURL}/avatar/${user.avatar}` }
+                : AvatarPlaceholder
+            }
             alt="Avatar do usuário"
             size="xl"
           />

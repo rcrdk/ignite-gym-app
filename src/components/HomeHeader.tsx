@@ -8,6 +8,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed'
 import { useAuth } from '@hooks/useAuth'
+import { API } from '@services/api'
 import { LogOutIcon } from 'lucide-react-native'
 import { TouchableOpacity } from 'react-native'
 
@@ -20,7 +21,11 @@ export function HomeHeader() {
     <SafeAreaView bg="$gray600">
       <HStack py="$5" px="$6" gap="$4" alignItems="center">
         <Avatar
-          source={user.avatar ? { uri: user.avatar } : AvatarPlaceholder}
+          source={
+            user.avatar
+              ? { uri: `${API.defaults.baseURL}/avatar/${user.avatar}` }
+              : AvatarPlaceholder
+          }
           alt="Avatar do usuário"
           size="sm"
         />
