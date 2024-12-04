@@ -87,7 +87,7 @@ export function History() {
           style={{ paddingHorizontal: 24 }}
           stickySectionHeadersEnabled={false}
           // eslint-disable-next-line prettier/prettier
-          contentContainerStyle={[{ paddingTop: 6, paddingBottom: 32 }, history.length === 0 && { flex: 1, justifyContent: 'center' }]}
+          contentContainerStyle={[{ paddingTop: 6, paddingBottom: 32 }, history.length === 0 && { flexGrow: 1, justifyContent: 'center' }]}
           // eslint-disable-next-line prettier/prettier
           ListEmptyComponent={() => <Text textAlign="center" color="$gray200" fontFamily="$body" lineHeight="$lg">Não há exercícios registrados ainda.{'\n'}Vamos começar hoje?</Text>}
         />

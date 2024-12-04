@@ -20,6 +20,7 @@ type AuthContextOnSignInProps = {
 type AuthContextStorageUserAndTokenProps = {
   user: UserDTO
   token: string
+  refresh_token: string
 }
 
 export type AuthContextProps = {
@@ -54,11 +55,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   async function storageUserAndTokenSave({
     user,
     token,
+    refresh_token,
   }: AuthContextStorageUserAndTokenProps) {
     try {
       setIsLoadingUserStorageData(true)
       await storageUserSave(user)
-      await storageAuthTokenSave(token)
+      await storageAuthTokenSave({ token, refresh_token })
     } catch (error) {
       throw error
     } finally {
@@ -70,7 +72,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await API.post('/sessions', { email, password })
 
-      if (data.user && data.token) {
+      if (data.user && data.token && data.refresh_token) {
         setIsLoadingUserStorageData(true)
         await storageUserAndTokenSave(data)
         userAndTokenUpdate(data)
@@ -109,10 +111,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setIsLoadingUserStorageData(true)
 
       const loggedUser = await storageUserGet()
-      const token = await storageAuthTokenGet()
+      const { token, refresh_token } = await storageAuthTokenGet()
 
       if (token && loggedUser)
-        await userAndTokenUpdate({ user: loggedUser, token })
+        userAndTokenUpdate({ user: loggedUser, token, refresh_token })
     } catch (error) {
       throw error
     } finally {
@@ -123,6 +125,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   useEffect(() => {
     onGetUserData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    const subscribe = API.registerInterceptTokenManager(onSignOut)
+
+    return () => subscribe()
   }, [])
 
   return (
