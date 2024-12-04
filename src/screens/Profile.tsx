@@ -12,51 +12,32 @@ import {
   View,
   VStack,
 } from '@gluestack-ui/themed'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useAuth } from '@hooks/useAuth'
+import { type FormDataProps, profileSchema } from '@schemas/profileSchema'
+import { API } from '@services/api'
+import { AppError } from '@utils/AppError'
+import { wait } from '@utils/wait'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity } from 'react-native'
 
-// const profileSchema = z
-//   .object({
-//     name: z.string().min(1, 'Informe o nome.'),
-//     email: z
-//       .string()
-//       .min(1, 'Informe o e-mail.')
-//       .email('Informe um email válido.'),
-//     password: z
-//       .string()
-//       .min(1, 'Informe a senha.')
-//       .min(6, 'Informe a senha com ao menos 6 digitos.'),
-//     password_confirm: z.string().min(1, 'Confirme a senha.'),
-//   })
-//   .superRefine(({ password_confirm, password }, ctx) => {
-//     if (password_confirm !== password) {
-//       ctx.addIssue({
-//         code: 'custom',
-//         message: 'As senhas não são iguais.',
-//         path: ['password_confirm'],
-//       })
-//     }
-//   })
-
-// type FormDataProps = z.infer<typeof profileSchema>
-
 export function Profile() {
-  // const {
-  //   handleSubmit,
-  //   control,
-  //   formState: { errors, isSubmitting },
-  // } = useForm<FormDataProps>({
-  //   resolver: zodResolver(profileSchema),
-  //   defaultValues: {
-  //     name: 'Ricardo August Kowalski',
-  //     email: 'ricardoakowalski@gmail.com',
-  //     current_password: '',
-  //     new_password: '',
-  //     password_confirm: '',
-  //   },
-  // })
+  const { user, onUpdateUserProfile } = useAuth()
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<FormDataProps>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+    },
+  })
 
   const [userAvatar, setUserAvatar] = useState('http://github.com/rcrdk.png')
 
@@ -103,14 +84,55 @@ export function Profile() {
     }
   }
 
-  // function handleSaveProfile({
-  //   name,
-  //   email,
-  //   password,
-  //   password_confirm,
-  // }: FormDataProps) {
-  //   console.log({ name, email, password, password_confirm })
-  // }
+  async function handleSaveProfile(data: FormDataProps) {
+    try {
+      await wait()
+
+      const userUpdated = user
+      userUpdated.name = data.name
+
+      await API.put(`/users`, {
+        name: data.name,
+        old_password: data.password,
+        password: data.new_password,
+      })
+
+      await onUpdateUserProfile(userUpdated)
+
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Dados salvos."
+            description="As informações do seu perfil foram atualizadas."
+            action="success"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const message = isAppError
+        ? error.message
+        : 'Não foi possível salvar seus dados. Tente novamente mais tarde.'
+
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Ocorreu um erro."
+            description={message}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
 
   return (
     <VStack flex={1}>
@@ -136,12 +158,36 @@ export function Profile() {
           </View>
 
           <VStack gap="$2" w="$full">
-            <Input placeholder="Nome" bg="$gray600" />
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Nome"
+                  bg="$gray600"
+                  value={value}
+                  onChangeText={onChange}
+                  errorMessage={errors.name?.message}
+                  autoCapitalize="words"
+                />
+              )}
+            />
 
-            <Input
-              value="ricardoakowalski@gmail.com"
-              bg="$gray600"
-              isReadOnly
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="E-mail"
+                  bg="$gray600"
+                  value={value}
+                  onChangeText={onChange}
+                  errorMessage={errors.email?.message}
+                  autoCapitalize="words"
+                  keyboardType="email-address"
+                  isReadOnly
+                />
+              )}
             />
           </VStack>
 
@@ -157,17 +203,53 @@ export function Profile() {
           </Heading>
 
           <VStack gap="$2" w="$full">
-            <Input placeholder="Senha antiga" bg="$gray600" secureTextEntry />
-
-            <Input placeholder="Nova senha" bg="$gray600" secureTextEntry />
-
-            <Input
-              placeholder="Confirme a nova senha"
-              bg="$gray600"
-              secureTextEntry
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange } }) => (
+                <Input
+                  placeholder="Senha atual"
+                  bg="$gray600"
+                  onChangeText={onChange}
+                  errorMessage={errors.password?.message}
+                  secureTextEntry
+                />
+              )}
             />
 
-            <Button label="Confirme a nova senha" />
+            <Controller
+              control={control}
+              name="new_password"
+              render={({ field: { onChange } }) => (
+                <Input
+                  placeholder="Nova senha"
+                  bg="$gray600"
+                  onChangeText={onChange}
+                  errorMessage={errors.new_password?.message}
+                  secureTextEntry
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="confirm_password"
+              render={({ field: { onChange } }) => (
+                <Input
+                  placeholder="Confirme a nova senha"
+                  bg="$gray600"
+                  onChangeText={onChange}
+                  errorMessage={errors.confirm_password?.message}
+                  secureTextEntry
+                />
+              )}
+            />
+
+            <Button
+              label="Salvar informações"
+              isLoading={isSubmitting}
+              onPress={handleSubmit(handleSaveProfile)}
+            />
           </VStack>
         </Center>
       </ScrollView>

@@ -24,9 +24,10 @@ type AuthContextStorageUserAndTokenProps = {
 
 export type AuthContextProps = {
   user: UserDTO
-  onSignIn: (data: AuthContextOnSignInProps) => Promise<any>
-  onSignOut: () => Promise<any>
-  onGetUserData: () => Promise<any>
+  onSignIn: (data: AuthContextOnSignInProps) => Promise<void>
+  onSignOut: () => Promise<void>
+  onUpdateUserProfile: (user: UserDTO) => Promise<void>
+  onGetUserData: () => Promise<void>
   isLoadingUserStorageData: boolean
 }
 
@@ -94,6 +95,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+  async function onUpdateUserProfile(user: UserDTO) {
+    try {
+      setUser(user)
+      await storageUserSave(user)
+    } catch (error) {
+      throw error
+    }
+  }
+
   async function onGetUserData() {
     try {
       setIsLoadingUserStorageData(true)
@@ -121,6 +131,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         user,
         onSignIn,
         onSignOut,
+        onUpdateUserProfile,
         onGetUserData,
         isLoadingUserStorageData,
       }}
