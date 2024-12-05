@@ -31,7 +31,5 @@ This app was created to help users track their gym exercises. This project was d
 - [React Hook Form](https://www.react-hook-form.com/) + [Zod](https://zod.dev/)
 - [Axios](https://axios-http.com/)
 
-
-
 ## 🚚 API
-It was used an already existent API to develpe this app, check it out [here](https://github.com/orodrigogo/ignitegym-api).
+It was used an already existent API to develped this app, check it out [here](https://github.com/orodrigogo/ignitegym-api).
