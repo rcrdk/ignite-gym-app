@@ -12,6 +12,11 @@ import {
 } from '@storage/storageUser'
 import { createContext, type ReactNode, useEffect, useState } from 'react'
 
+import {
+  notificationAddTagName,
+  notificationRemoveTagName,
+} from '../notifications'
+
 type AuthContextOnSignInProps = {
   email: string
   password: string
@@ -76,6 +81,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         setIsLoadingUserStorageData(true)
         await storageUserAndTokenSave(data)
         userAndTokenUpdate(data)
+        notificationAddTagName(data.user.name)
       }
     } catch (error) {
       throw error
@@ -90,6 +96,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setUser({} as UserDTO)
       await storageUserRemove()
       await storageAuthTokenRemove()
+      notificationRemoveTagName()
     } catch (error) {
       throw error
     } finally {
@@ -101,6 +108,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       setUser(user)
       await storageUserSave(user)
+      notificationAddTagName(user.name)
     } catch (error) {
       throw error
     }

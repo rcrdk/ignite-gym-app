@@ -21,6 +21,8 @@ import { API } from '@services/api'
 import { AppError } from '@utils/AppError'
 import { Controller, useForm } from 'react-hook-form'
 
+import { notificationAddTagName } from '../notifications'
+
 export function SignUp() {
   const {
     handleSubmit,
@@ -53,6 +55,7 @@ export function SignUp() {
       })
 
       await onSignIn({ email, password })
+      notificationAddTagName(name)
     } catch (error) {
       const isAppError = error instanceof AppError
       const message = isAppError

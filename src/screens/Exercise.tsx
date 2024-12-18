@@ -27,6 +27,11 @@ import { ArrowLeft } from 'lucide-react-native'
 import { useCallback, useState } from 'react'
 import { Alert, TouchableOpacity } from 'react-native'
 
+import {
+  notificationLastExercise,
+  notificationWeekExercises,
+} from '../notifications'
+
 type RouteParams = {
   id: string
 }
@@ -86,21 +91,25 @@ export function Exercise() {
 
       await API.post('/history', { exercise_id: id })
 
-      toast.show({
-        placement: 'top',
-        duration: 4000,
-        render: ({ id }) => (
-          <ToastMessage
-            id={id}
-            title="Exercício realizado."
-            description="Acesse o histórico para ver todops os registros."
-            action="success"
-            onClose={() => toast.close(id)}
-          />
-        ),
-      })
+      await notificationWeekExercises()
 
-      navigator.navigate('history')
+      notificationLastExercise()
+
+      // toast.show({
+      //   placement: 'top',
+      //   duration: 4000,
+      //   render: ({ id }) => (
+      //     <ToastMessage
+      //       id={id}
+      //       title="Exercício realizado."
+      //       description="Acesse o histórico para ver todops os registros."
+      //       action="success"
+      //       onClose={() => toast.close(id)}
+      //     />
+      //   ),
+      // })
+
+      // navigator.goBack()
     } catch (error) {
       const isAppError = error instanceof AppError
       const message = isAppError
@@ -183,7 +192,12 @@ export function Exercise() {
             )}
 
             <HStack gap="$1" alignItems="center">
-              <Icon as={IconCategory} color="$gray300" size="xs" />
+              <Icon
+                as={IconCategory}
+                color="$gray300"
+                stroke="$gray300"
+                size="xs"
+              />
               {isLoading ? (
                 <Text color="$gray400" bg="$gray400" rounded="$sm">
                   Categoria
@@ -231,7 +245,7 @@ export function Exercise() {
           <Box bg="$gray600" rounded="$md" p="$4" mt="$6">
             <HStack justifyContent="space-evenly" alignItems="center" mb="$4">
               <HStack alignItems="center" gap="$2" py="$1">
-                <Icon as={IconSeries} color="$green500" />
+                <Icon as={IconSeries} color="$green500" stroke="$green500" />
                 {isLoading ? (
                   <Text color="$gray400" bg="$gray400" rounded="$sm">
                     000 séries
@@ -244,7 +258,11 @@ export function Exercise() {
               </HStack>
 
               <HStack alignItems="center" gap="$2" py="$1">
-                <Icon as={IconRepetitions} color="$green500" />
+                <Icon
+                  as={IconRepetitions}
+                  color="$green500"
+                  stroke="$green500"
+                />
                 {isLoading ? (
                   <Text color="$gray400" bg="$gray400" rounded="$sm">
                     000 repetições

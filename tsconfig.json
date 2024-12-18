@@ -1,5 +1,6 @@
 {
   "extends": "expo/tsconfig.base",
+  "include": ["src/**/*", "App.tsx", "index.ts"],
   "compilerOptions": {
     "strict": true,
     "verbatimModuleSyntax": true,
