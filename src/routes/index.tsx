@@ -2,7 +2,12 @@ import { Loading } from '@components/Loading'
 import { Notification } from '@components/Notification'
 import { Box } from '@gluestack-ui/themed'
 import { useAuth } from '@hooks/useAuth'
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
+import {
+  DefaultTheme,
+  type LinkingOptions,
+  NavigationContainer,
+  type ParamListBase,
+} from '@react-navigation/native'
 import { useEffect, useState } from 'react'
 import {
   type NotificationWillDisplayEvent,
@@ -20,7 +25,7 @@ export function Routes() {
   const theme = DefaultTheme
   theme.colors.background = gluestackUIConfig.tokens.colors.gray700
 
-  const linking = {
+  const linking: LinkingOptions<ParamListBase> = {
     prefixes: [
       'ignitegym://',
       'com.rcrdk.dev.ignitegym://',
@@ -28,11 +33,8 @@ export function Routes() {
     ],
     config: {
       screens: {
-        exercise: {
-          path: '/exercise/:id',
-          parse: {
-            id: (id: string) => id,
-          },
+        NotFound: {
+          path: '*',
         },
       },
     },
@@ -70,13 +72,15 @@ export function Routes() {
 
   return (
     <Box flex={1} bg="$gray700">
-      <NavigationContainer theme={theme} linking={linking}>
-        {user.id ? <AppRoutes /> : <AuthRoutes />}
+      {user.id ? (
+        <AppRoutes theme={theme} linking={linking} />
+      ) : (
+        <AuthRoutes theme={theme} linking={linking} />
+      )}
 
-        {notification && (
-          <Notification data={notification} onHide={onHideNotification} />
-        )}
-      </NavigationContainer>
+      {notification && (
+        <Notification data={notification} onHide={onHideNotification} />
+      )}
     </Box>
   )
 }

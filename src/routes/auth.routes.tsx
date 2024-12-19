@@ -1,3 +1,4 @@
+import { createStaticNavigation } from '@react-navigation/native'
 import {
   createNativeStackNavigator,
   type NativeStackNavigationProp,
@@ -12,13 +13,24 @@ type AuthRoutesType = {
 
 export type AuthNavigatorRoutesProps = NativeStackNavigationProp<AuthRoutesType>
 
-const { Navigator, Screen } = createNativeStackNavigator<AuthRoutesType>()
+const RootStack = createNativeStackNavigator<AuthRoutesType>({
+  screens: {
+    signIn: {
+      screen: SignIn,
+      linking: {
+        path: 'signin',
+      },
+    },
+    signUp: {
+      screen: SignUp,
+      linking: {
+        path: 'signup',
+      },
+    },
+  },
+  screenOptions: {
+    headerShown: false,
+  },
+})
 
-export function AuthRoutes() {
-  return (
-    <Navigator screenOptions={{ headerShown: false }}>
-      <Screen name="signIn" component={SignIn} />
-      <Screen name="signUp" component={SignUp} />
-    </Navigator>
-  )
-}
+export const AuthRoutes = createStaticNavigation(RootStack)

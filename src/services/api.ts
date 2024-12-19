@@ -7,6 +7,8 @@ import { AppError } from '@utils/AppError'
 import type { AxiosError, AxiosInstance } from 'axios'
 import axios from 'axios'
 
+import { notificationRemoveTagName } from '../notifications'
+
 type SignOut = () => void
 
 type PromisseType = {
@@ -19,7 +21,7 @@ type ApiInstanceProps = AxiosInstance & {
 }
 
 const API = axios.create({
-  baseURL: 'http://192.168.1.9:3333',
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
 }) as ApiInstanceProps
 
 let failedQueue: PromisseType[] = []
@@ -38,6 +40,7 @@ API.registerInterceptTokenManager = (signOut) => {
 
           if (!refresh_token) {
             signOut()
+            notificationRemoveTagName()
             return Promise.reject(requestError)
           }
 
@@ -77,6 +80,7 @@ API.registerInterceptTokenManager = (signOut) => {
             } catch (error: any) {
               failedQueue.forEach((request) => request.onFailure(error))
               signOut()
+              notificationRemoveTagName()
               reject(error)
             } finally {
               isRefreshing = false
@@ -86,6 +90,7 @@ API.registerInterceptTokenManager = (signOut) => {
         }
 
         signOut()
+        notificationRemoveTagName()
       }
 
       if (requestError.response && requestError.response.data) {

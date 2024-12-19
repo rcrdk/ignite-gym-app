@@ -95,21 +95,21 @@ export function Exercise() {
 
       notificationLastExercise()
 
-      // toast.show({
-      //   placement: 'top',
-      //   duration: 4000,
-      //   render: ({ id }) => (
-      //     <ToastMessage
-      //       id={id}
-      //       title="Exercício realizado."
-      //       description="Acesse o histórico para ver todops os registros."
-      //       action="success"
-      //       onClose={() => toast.close(id)}
-      //     />
-      //   ),
-      // })
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Exercício realizado."
+            description="Acesse o histórico para ver todops os registros."
+            action="success"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
 
-      // navigator.goBack()
+      navigator.goBack()
     } catch (error) {
       const isAppError = error instanceof AppError
       const message = isAppError
@@ -230,7 +230,7 @@ export function Exercise() {
             ) : (
               <Image
                 source={{
-                  uri: `${API.defaults.baseURL}/exercise/demo/${exercise.demo}`,
+                  uri: `${process.env.EXPO_PUBLIC_API_URL}/exercise/demo/${exercise.demo}`,
                 }}
                 w="$full"
                 h="$full"

@@ -22,7 +22,6 @@ import { wait } from '@utils/wait'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import mime from 'mime'
-import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity } from 'react-native'
 
@@ -205,7 +204,9 @@ export function Profile() {
           <Avatar
             source={
               user.avatar
-                ? { uri: `${API.defaults.baseURL}/avatar/${user.avatar}` }
+                ? {
+                    uri: `${process.env.EXPO_PUBLIC_API_URL}/avatar/${user.avatar}`,
+                  }
                 : AvatarPlaceholder
             }
             alt="Avatar do usuário"

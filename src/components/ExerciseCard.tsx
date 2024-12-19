@@ -29,7 +29,7 @@ export function ExerciseCard({ exercise, ...props }: Props) {
       >
         <Image
           source={{
-            uri: `${API.defaults.baseURL}/exercise/thumb/${exercise.thumb}`,
+            uri: `${process.env.EXPO_PUBLIC_API_URL}/exercise/thumb/${exercise.thumb}`,
           }}
           alt="Imagem do exercício"
           w="$16"

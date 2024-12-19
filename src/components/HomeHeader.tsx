@@ -8,7 +8,6 @@ import {
   VStack,
 } from '@gluestack-ui/themed'
 import { useAuth } from '@hooks/useAuth'
-import { API } from '@services/api'
 import { LogOutIcon } from 'lucide-react-native'
 import { TouchableOpacity } from 'react-native'
 
@@ -23,7 +22,9 @@ export function HomeHeader() {
         <Avatar
           source={
             user.avatar
-              ? { uri: `${API.defaults.baseURL}/avatar/${user.avatar}` }
+              ? {
+                  uri: `${process.env.EXPO_PUBLIC_API_URL}/avatar/${user.avatar}`,
+                }
               : AvatarPlaceholder
           }
           alt="Avatar do usuário"
